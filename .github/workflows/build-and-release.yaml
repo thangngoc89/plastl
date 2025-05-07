@@ -5,85 +5,48 @@ on:
     types: [published]
 
 jobs:
-  build-macos:
-    runs-on: macos-latest
+  build:
+    strategy:
+      matrix:
+        os: [macos-latest, windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
     steps:
       - uses: actions/checkout@v4
 
       - name: Install uv
+        shell: bash
         run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            irm https://astral.sh/uv/install.ps1 | iex
+          else
+            curl -LsSf https://astral.sh/uv/install.sh | sh
+            echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+          fi
 
-      - name: Install dependencies with uv
+      - name: Install dependencies via uv
         run: |
-          uv pip install pyinstaller PyQt5 trimesh
+          uv venv
+          uv pip install -e .
 
-      - name: Build with PyInstaller (macOS)
+      - name: Build app with PyInstaller
         run: |
-          pyinstaller --windowed --icon=assets/plastl.icns plastl.py
-          cd dist
-          zip -r plastl-macos-arm64.app.zip plastl.app
+          if [[ "$RUNNER_OS" == "macOS" ]]; then
+            pyinstaller --windowed --icon=assets/plastl.icns plastl.py
+            cd dist && zip -r plastl-macos-arm64.app.zip plastl.app
+          elif [[ "$RUNNER_OS" == "Linux" ]]; then
+            pyinstaller --windowed --onefile plastl.py
+            zip dist/plastl-linux-x64.zip dist/plastl
+          elif [[ "$RUNNER_OS" == "Windows" ]]; then
+            pyinstaller --windowed --onefile --icon=assets/plastl.ico plastl.py
+            Compress-Archive -Path dist/plastl.exe -DestinationPath dist/plastl-windows-x64.zip
+          fi
+        shell: bash
 
-      - name: Upload release asset (macOS)
+      - name: Upload release asset
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/plastl-macos-arm64.app.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install uv
-        run: |
-          irm https://astral.sh/uv/install.ps1 | iex
-
-      - name: Install dependencies with uv
-        run: |
-          uv pip install pyinstaller PyQt5 trimesh
-
-      - name: Build with PyInstaller (Windows)
-        run: |
-          pyinstaller --windowed --onefile --icon=assets/plastl.ico plastl.py
-          Compress-Archive -Path dist/plastl.exe -DestinationPath dist/plastl-windows-x64.zip
-
-      - name: Upload release asset (Windows)
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/plastl-windows-x64.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-  build-linux:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Install system dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libgl1-mesa-glx curl
-
-      - name: Install uv
-        run: |
-          curl -LsSf https://astral.sh/uv/install.sh | sh
-          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
-
-      - name: Install dependencies with uv
-        run: |
-          uv pip install pyinstaller PyQt5 trimesh
-
-      - name: Build with PyInstaller (Linux)
-        run: |
-          pyinstaller --windowed --onefile plastl.py
-          zip dist/plastl-linux-x64.zip dist/plastl
-
-      - name: Upload release asset (Linux)
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/plastl-linux-x64.zip
+          files: |
+            dist/*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
