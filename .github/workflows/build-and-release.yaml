@@ -3,6 +3,7 @@ name: Build and Release Plastl
 on:
   release:
     types: [published]
+  workflow_dispatch:  # allows manual run
 
 jobs:
   build:
