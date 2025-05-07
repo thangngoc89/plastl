@@ -1,0 +1,89 @@
+name: Build and Release Plastl
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies with uv
+        run: |
+          uv pip install pyinstaller PyQt5 trimesh
+
+      - name: Build with PyInstaller (macOS)
+        run: |
+          pyinstaller --windowed --icon=assets/plastl.icns plastl.py
+          cd dist
+          zip -r plastl-macos-arm64.app.zip plastl.app
+
+      - name: Upload release asset (macOS)
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/plastl-macos-arm64.app.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        run: |
+          irm https://astral.sh/uv/install.ps1 | iex
+
+      - name: Install dependencies with uv
+        run: |
+          uv pip install pyinstaller PyQt5 trimesh
+
+      - name: Build with PyInstaller (Windows)
+        run: |
+          pyinstaller --windowed --onefile --icon=assets/plastl.ico plastl.py
+          Compress-Archive -Path dist/plastl.exe -DestinationPath dist/plastl-windows-x64.zip
+
+      - name: Upload release asset (Windows)
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/plastl-windows-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-glx curl
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      - name: Install dependencies with uv
+        run: |
+          uv pip install pyinstaller PyQt5 trimesh
+
+      - name: Build with PyInstaller (Linux)
+        run: |
+          pyinstaller --windowed --onefile plastl.py
+          zip dist/plastl-linux-x64.zip dist/plastl
+
+      - name: Upload release asset (Linux)
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/plastl-linux-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
