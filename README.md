@@ -3,7 +3,7 @@
 Plastl is a lightweight and user-friendly mesh format converter for dental applications. Built with **PyQt5** and powered by **Trimesh**, it allows you to convert mesh files between .PLY, .STL, and .OBJ formats — efficiently and effortlessly.
 
 <p align="center">
-  <img src="./assets/logo.png" alt="Plastl" width="600"/>
+  <img src="./assets/readme.png" alt="Plastl" width="600"/>
 </p>
 
 ## 🚀 Features

@@ -1,6 +1,6 @@
 import os
 import sys
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Pool, cpu_count, freeze_support
 
 import trimesh
 from PyQt5.QtWidgets import (
@@ -199,8 +199,13 @@ class SimpleUI(QWidget):
             )
 
 
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
     win = SimpleUI()
     win.show()
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    freeze_support()
+    main()
