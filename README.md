@@ -7,6 +7,7 @@ Plastl is a lightweight and user-friendly mesh format converter for dental appli
 </p>
 
 ## 🚀 Features
+
 - ✅ Batch Conversion: Select multiple files or drag-and-drop them into the app.
 - ⚡ Parallel Processing: Converts meshes using multiple CPU cores for blazing-fast performance.
 - 🔁 Bidirectional Format Support: Convert between PLY ↔ STL, OBJ ↔ STL, etc.
@@ -17,33 +18,63 @@ Plastl is a lightweight and user-friendly mesh format converter for dental appli
 ## 📦 Supported Formats
 
 | Input Format | Supported Output Formats |
-|--------------|---------------------------|
-| `.stl`       | `.ply`, `.stl`            |
-| `.ply`       | `.stl`, `.ply`            |
-| `.obj`       | `.stl`, `.ply`            |
+| ------------ | ------------------------ |
+| `.stl`       | `.ply`, `.stl`           |
+| `.ply`       | `.stl`, `.ply`           |
+| `.obj`       | `.stl`, `.ply`           |
 
-## 🛠 Requirements
+## 📦 Download Prebuilt App
+
+[👉 Download Plastl Latest Release](https://github.com/thangngoc89/plastl/releases/latest)
+
+Available Platforms:
+
+| Platform              | File                       |
+| --------------------- | -------------------------- |
+| macOS (Apple Silicon) | plastl-macos-arm64.app.zip |
+| Windows               | plastl-windows-x64.zip     |
+| Linux                 | plastl-linux-x64.zip       |
+
+🗂 Unzip the downloaded file and run the app directly. No installation needed.
+
+### ⚠️ Security Notice
+
+Plastl is currently not code-signed or notarized. Depending on your operating system, you may need to:
+
+macOS:
+
+- Right-click the .app → Open → Click “Open” again in the dialog.
+- Alternatively, allow it via System Settings → Privacy & Security.
+
+Windows:
+
+- You may see a Windows Defender SmartScreen warning. Click “More info” → “Run anyway” if you trust the source.
+
+## Build from source
+
+### 🛠 Requirements
+
 - Python ≥ 3.8
 - PyQt5
 - Trimesh
 
-## Install dependencies
+### Install dependencies
 
 ```bash
 pip install trimesh PyQt5
 ```
 
-## ▶️ How to Use
+### ▶️ How to Use
 
 ```bash
 python plastl.py
 ```
 
-1.	Launch the application.
-2.	Drag & drop or select mesh files (.stl, .ply, .obj).
-3.	Choose an output format.
-4.	Pick an output folder.
-5.	Click Run – and watch the magic happen!
+1. Launch the application.
+2. Drag & drop or select mesh files (.stl, .ply, .obj).
+3. Choose an output format.
+4. Pick an output folder.
+5. Click Run – and watch the magic happen!
 
 ## 💡 Why “Plastl”?
 
@@ -51,12 +82,12 @@ Inspired by **Plaster + STL**, Plastl pays homage to the physical dental casts n
 
 ## 📸 Screenshots
 
-*Coming soon...*
+_Coming soon..._
 
 ## 🧪 Known Limitations
 
--	No preview or mesh inspection (yet).
--	May not support some malformed mesh files.
+- No preview or mesh inspection (yet).
+- May not support some malformed mesh files.
 
 ## 📜 License
 
