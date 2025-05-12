@@ -27,7 +27,7 @@ jobs:
         shell: bash
         run: |
           if [[ "$RUNNER_OS" == "macOS" ]]; then
-            uv run pyinstaller --windowed --icon=assets/plastl.icns --add-data="assets;assets" plastl.py
+            uv run pyinstaller --windowed --icon=assets/plastl.icns --add-data="assets:assets" plastl.py
             cd dist && zip -r plastl-macos-arm64.app.zip plastl.app
           elif [[ "$RUNNER_OS" == "Linux" ]]; then
             uv run pyinstaller --windowed --onefile --add-data="assets:assets" plastl.py
