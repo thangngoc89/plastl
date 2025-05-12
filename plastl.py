@@ -4,12 +4,14 @@ from multiprocessing import Pool, cpu_count, freeze_support
 
 import trimesh
 from PyQt5.QtWidgets import (
+    QAction,
     QApplication,
     QComboBox,
     QFileDialog,
     QHBoxLayout,
     QLabel,
     QListWidget,
+    QMenuBar,
     QMessageBox,
     QPushButton,
     QVBoxLayout,
@@ -72,6 +74,19 @@ class SimpleUI(QWidget):
         layout.addWidget(self.log_box)
 
         self.setLayout(layout)
+        # Create a menu bar
+        menu_bar = QMenuBar(self)
+
+        # Create Help menu
+        help_menu = menu_bar.addMenu("Help")
+
+        # About action
+        about_action = QAction("About Plastl", self)
+        about_action.triggered.connect(self.show_about_dialog)
+        help_menu.addAction(about_action)
+
+        # Add menu bar to the layout (must insert at the top)
+        layout.setMenuBar(menu_bar)
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasUrls():
@@ -107,6 +122,20 @@ class SimpleUI(QWidget):
                 os.system(f'open "{self.output_folder}"')
             else:
                 os.system(f'start "" "{self.output_folder}"')
+
+    def show_about_dialog(self):
+        QMessageBox.information(
+            self,
+            "About Plastl",
+            "<b>Plastl Mesh Converter</b><br><br>"
+            "A simple batch tool for converting 3D mesh files between STL and PLY formats.<br>"
+            "Supports drag-and-drop and multiprocessing for fast processing.<br><br>"
+            "Developed using PyQt5 and Trimesh.<br>"
+            "Version: 1.0.5<br>"
+            "© 2025 Khoa Nguyen<br><br>"
+            '<a href="https://github.com/thangngoc89/plastl" style="color:#2980b9;">'
+            "GitHub Repository</a>",
+        )
 
     @staticmethod
     def convert_file(input_path: str, output_path: str) -> tuple:
