@@ -3,6 +3,7 @@ import sys
 from multiprocessing import Pool, cpu_count, freeze_support
 
 import trimesh
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QAction,
     QApplication,
@@ -19,10 +20,17 @@ from PyQt5.QtWidgets import (
 )
 
 
+def resource_path(relative_path):
+    """Get absolute path to resource, works for dev and for PyInstaller"""
+    base_path = getattr(sys, "_MEIPASS", os.path.abspath("."))
+    return os.path.join(base_path, relative_path)
+
+
 class SimpleUI(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Plastl Mesh Converter")
+        self.setWindowIcon(QIcon(resource_path("assets/plastl.ico")))  # Windows/Linux
         self.resize(600, 550)
         self.setAcceptDrops(True)
 

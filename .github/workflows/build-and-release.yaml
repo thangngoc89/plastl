@@ -27,10 +27,10 @@ jobs:
         shell: bash
         run: |
           if [[ "$RUNNER_OS" == "macOS" ]]; then
-            uv run pyinstaller --windowed --icon=assets/plastl.icns plastl.py
+            uv run pyinstaller --windowed --icon=assets/plastl.icns --add-data "assets;assets" plastl.py
             cd dist && zip -r plastl-macos-arm64.app.zip plastl.app
           elif [[ "$RUNNER_OS" == "Linux" ]]; then
-            uv run pyinstaller --windowed --onefile plastl.py
+            uv run pyinstaller --windowed --onefile --add-data "assets:assets" plastl.py
             zip dist/plastl-linux-x64.zip dist/plastl
           fi
 
@@ -38,7 +38,7 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          uv run pyinstaller --windowed --onefile --icon=assets/plastl.ico plastl.py
+          uv run pyinstaller --windowed --onefile --icon=assets/plastl.ico --add-data "assets:assets" plastl.py
           Compress-Archive -Path dist/plastl.exe -DestinationPath dist/plastl-windows-x64.zip
 
       - name: Upload release asset
